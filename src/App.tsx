@@ -51,7 +51,7 @@ function App() {
             <section id="gallery">
                 {console.log(artworks)}
                 {artworks.map(artwork => (
-                    <figure>
+                    <figure key={artwork.id}>
                         <img src={artwork.headerImage.url}/>
                         <figcaption>
                             <p className="artwork-title">{artwork.title}</p>
