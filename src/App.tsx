@@ -3,7 +3,7 @@ import Masonry from '@mui/lab/Masonry';
 import './App.css'
 
 
-const baseUrl = "https://www.rijksmuseum.nl/api/nl/collection?key=yW6uq3BV&involvedMaker=Rembrandt+van+Rijn";
+const baseUrl = "https://www.rijksmuseum.nl/api/nl/collection?key=yW6uq3BV&involvedMaker=Vincent+van+Gogh"
 const requestImageWidth = 300;
 
 function App() {
@@ -56,10 +56,10 @@ function App() {
             {error && <p className="error-message">{error}</p>}
 
             <Masonry id="#gallery" columns={5} spacing={3}>
-                    {artworks.map(({id, webImage, title, longTitle, principalOrFirstMaker: artist}) => (
+                    {artworks && artworks.map(({id, webImage: {url: imageUrl}, title, longTitle, principalOrFirstMaker: artist}) => (
                         <div className="artwork" key={id}>
                             <div>
-                                <img src={smallImageRequestUrl(webImage.url)}/>
+                                <img src={smallImageRequestUrl(imageUrl)}/>
                             </div>
                             <p className="artwork-title">{title}</p>
                             <p className="artwork-subtext">{artist}, {parseTitle(longTitle).date}</p>
