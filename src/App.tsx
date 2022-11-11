@@ -4,6 +4,7 @@ import './App.css'
 
 
 const baseUrl = "https://www.rijksmuseum.nl/api/nl/collection?key=yW6uq3BV&involvedMaker=Rembrandt+van+Rijn";
+const requestImageWidth = 300;
 
 function App() {
 
@@ -45,6 +46,12 @@ function App() {
         })
     }
 
+    const smallImageRequestUrl = (imageUrl:string ): string => {
+        const parts = imageUrl.split('=');
+        parts[1] = 'w' + requestImageWidth;
+        return parts.join('=');
+    }
+
 
     return (
         <div className="App">
@@ -57,7 +64,7 @@ function App() {
                 {artworks.map(artwork => (
                     <div className="artwork" key={artwork.id}>
                         <div>
-                        <img src={artwork.webImage.url}/>
+                        <img src={smallImageRequestUrl(artwork.webImage.url)}/>
                         </div>
                         <p className="artwork-title">{artwork.title}</p>
                         <p className="artwork-subtext">{artwork.principalOrFirstMaker}, {parseTitle(artwork.longTitle).date}</p>
