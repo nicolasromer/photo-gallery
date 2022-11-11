@@ -1,34 +1,68 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
+import {useState, useEffect} from 'react'
 import './App.css'
 
-function App() {
-  const [count, setCount] = useState(0)
+const baseUrl = "https://www.rijksmuseum.nl/api/nl/collection?key=yW6uq3BV&involvedMaker=Rembrandt+van+Rijn";
 
-  return (
-    <div className="App">
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src="/vite.svg" className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://reactjs.org" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </div>
-  )
+function App() {
+
+    const [artworks, setArtworks] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
+
+    useEffect(() => {
+        setLoading(true);
+
+        fetch(baseUrl)
+            .then((response) => {
+                if (!response.ok) {
+                    setError(`something went wrong, ${response.status} error`);
+                }
+
+                return response.json()
+            })
+            .then(json => {
+                setArtworks(json.artObjects);
+                setError(null);
+            })
+            .catch((err) => {
+                setError(err.message);
+            })
+            .finally(() => {
+                setLoading(false);
+            });
+
+    }, []);
+
+    const parseTitle = (title: string) => {
+        const data = title.split(', ');
+        return ({
+            title: data[0],
+            artist: data[1],
+            date: data[2]
+        })
+    }
+
+    return (
+        <div className="App">
+            <header><h1>Museum</h1></header>
+            {loading && <div id="loading">loading</div>}
+            {error && <p className="error-message">{error}</p>}
+
+            <section id="gallery">
+                {console.log(artworks)}
+                {artworks.map(artwork => (
+                    <figure>
+                        <img src={artwork.headerImage.url}/>
+                        <figcaption>
+                            <p className="artwork-title">{artwork.title}</p>
+                            <p className="artwork-subtext">{artwork.principalOrFirstMaker}, {parseTitle(artwork.longTitle).date}</p>
+                        </figcaption>
+                    </figure>
+
+                ))}
+            </section>
+        </div>
+    )
 }
 
 export default App
