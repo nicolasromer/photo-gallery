@@ -7,7 +7,6 @@ const baseUrl = "https://www.rijksmuseum.nl/api/nl/collection?key=yW6uq3BV&invol
 const requestImageWidth = 300;
 
 function App() {
-
     const [artworks, setArtworks] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
@@ -33,9 +32,6 @@ function App() {
             .finally(() => {
                 setLoading(false);
             });
-
-
-
     }, []);
 
     const parseTitle = (title: string) => {
@@ -59,17 +55,16 @@ function App() {
             {loading && <div id="loading">loading...</div>}
             {error && <p className="error-message">{error}</p>}
 
-            <Masonry id="#gallery" columns={4} spacing={2}>
-                {console.log(artworks)}
-                {artworks.map(artwork => (
-                    <div className="artwork" key={artwork.id}>
-                        <div>
-                        <img src={smallImageRequestUrl(artwork.webImage.url)}/>
+            <Masonry id="#gallery" columns={5} spacing={3}>
+                    {artworks.map(({id, webImage, title, longTitle, principalOrFirstMaker: artist}) => (
+                        <div className="artwork" key={id}>
+                            <div>
+                                <img src={smallImageRequestUrl(webImage.url)}/>
+                            </div>
+                            <p className="artwork-title">{title}</p>
+                            <p className="artwork-subtext">{artist}, {parseTitle(longTitle).date}</p>
                         </div>
-                        <p className="artwork-title">{artwork.title}</p>
-                        <p className="artwork-subtext">{artwork.principalOrFirstMaker}, {parseTitle(artwork.longTitle).date}</p>
-                    </div>
-                ))}
+                    ))}
             </Masonry>
         </div>
     )
